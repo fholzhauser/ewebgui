@@ -1,0 +1,13 @@
+.eunit
+deps
+*.o
+*.beam
+*~
+*.plt
+erl_crash.dump
+ebin
+Mnesia.*
+webgui_logs
+.rebar
+rel
+.DS_Store

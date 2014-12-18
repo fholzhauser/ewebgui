@@ -1,0 +1,87 @@
+﻿#menuV2 li, #menuV2 a {zoom:1;} /* Hacks for IE6, IE7 */
+#menuV2, #menuV2 ul
+{
+    width: 150px; /* Main Menu Item widths */
+    border-top:none;
+    position: absolute;
+    list-style: none; margin: 0; padding: 0; display:block;
+}
+
+/* Top level menu links style
+---------------------------------------*/
+
+#menuV2 li
+{
+    background-color: #ff892e;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border: 1px solid #aaa;
+}
+#menuV2 li a
+{
+    /* border-top: 1px solid #ccc; */
+    display: block;
+    /*overflow: auto; force hasLayout in IE7 */
+    color: #444;
+    text-decoration: none;
+    line-height:26px;
+    padding-left:15px;
+}
+#menuV2 ul li a
+{
+    position: relative;
+    line-height:26px;
+}
+
+#menuV2 li a.arrow:hover
+{
+    background-image:url(arrowon.png);
+    background-repeat: no-repeat;
+    background-position: 97% 50%;
+}
+
+/*Sub level menu items
+---------------------------------------*/
+#menuV2 li ul
+{
+    position:absolute;
+    width: 150px; /*Sub Menu Items width */
+    visibility:hidden;
+}
+
+#menuV2 a.arrow
+{
+    background-image:url(arrow.gif);
+    background-repeat: no-repeat;
+    background-position: 97% 50%;
+}
+#menuV2 li:hover, #menuV2 li.onhover
+{
+    background: #fff;
+    background-position:0 -62px;
+    border: 1px solid #aaa;
+}
+#menuV2 ul li
+{
+    background: #ff892e;
+    background-image:none;
+    border: 1px solid #aaa;
+}
+#menuV2 ul li:hover, #menuV2 ul li.onhover
+{
+    background: #fff;
+    background-image:none;
+}
+
+/* Holly Hack for IE \
+* html #menuV2  li
+{
+    float:left;
+    height: 1%;
+}
+* html #menuV2  li a
+{
+    height: 1%;
+}*/
+/* End */

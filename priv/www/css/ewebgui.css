@@ -1,0 +1,354 @@
+/***** CSS RESET *****/
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outline:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+/***** STYLE *****/
+
+html {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    color: #444;
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+h1, h2 {
+    padding: 5px;
+}
+
+td {
+    padding: 1px 5px 1px 5px;
+}
+
+textarea {
+    font-size: 1.2em;
+    border: 1px solid #ccc;
+    color: #444;
+}
+
+input, select {
+    padding-left: 5px;
+    border: 2px solid #ccc;
+    margin: 3px;
+    height: 25px;
+    vertical-align: middle;
+}
+
+input:focus {
+    border: 1px solid #ff892e;
+}
+
+input[type="text"], input[type="password"], select {
+    font-size: 1.1em;
+    border: 2px solid #ccc;
+    color: #444;
+    height: 24px;
+}
+
+input[type="text"], input[type="password"] {
+    width: 200px;
+}
+
+input[type="text"]:focus, input[type="password"]:focus {
+    border: 2px solid #ff892e;
+}
+
+input[type="button"],input[type="submit"],input[type="reset"] {
+    width: 200px;
+    font-size: 1.1em;
+    height: 30px;
+    color: #444;
+    background: #ff892e;
+}
+
+input[type="button"]:hover,input[type="submit"]:hover,input[type="reset"]:hover {
+    color: #444;
+    border: 2px solid #ff892e;
+    cursor: pointer;
+    background: #fff;
+}
+
+input[type="button"]:focus,input[type="submit"]:focus,input[type="reset"]:focus {
+    color: #444;
+}
+
+input[type="checkbox"] {
+    border: none;
+}
+
+input[type="radio"] {
+    border: none;
+    height: auto;
+}
+
+select {
+    font-size: 1em;
+    height: 30px;
+}
+
+h1 {
+    color: #ff892e;
+    font-size: 1.5em;
+}
+
+h2 {
+    font-size: 1.3em;
+}
+
+.padding10 {
+    padding: 10px;
+}
+
+.center {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.container {
+    margin: 5px;
+    padding: 5px;
+    border: 1px solid #ccc;
+}
+
+.fullwidth {
+    width: 100%;
+}
+
+table .odd td, table .odd th  {background-color: #eee;}
+table .even td, table .even th {background-color: #fff;}
+
+.validation_error {background-color: #fcc; border: 2px solid #f00;}
+
+.ewgtable {color: #444; border-collapse: collapse; border: 1px solid #ccc; padding: 3px;}
+.ewgtable th {padding: 5px; min-height: 10px; background-color: #444; color: #fff; border: 1px solid #ccc;}
+.ewgtable tr {min-height: 10px; border: 1px solid #ccc; background-color: #eee;}
+.ewgtable td {padding: 5px; border: 1px solid #ccc;}
+.ewgtable tr.highlight > td  {background-color: #f00; color: #fff;}
+
+.ewg_formtable {color: #444;}
+.ewg_formtable th, td {vertical-align: middle; padding: 5px; border: 1px solid #ccc;}
+
+.big_error {color: #ff892e; border: 1px solid #fff; padding: 10px;}
+
+.ewg_advanced_option {
+    display: none;
+}
+
+.ewg_advanced_options_toggle {
+    display: inline;
+    background-color: #ccc;
+    color: #fff;
+}
+
+.ewg_advanced_options_toggle:hover {
+    color:  #ff892e;
+    cursor: pointer;
+}
+
+.ewg_page_help_toggle {
+    color: #444;
+    z-index: 5001;
+    background-color: #ff892e;
+    position: fixed;
+    top: 70px;
+    right: 0;
+    font-size: 1em;
+    padding: 2px;
+}
+.ewg_page_help_toggle:hover {
+    color: #ccc;
+    cursor: help;
+}
+
+.hidden {
+    display: none;
+}
+
+.ewg_page_help_toggle + div {
+    padding: 10px;
+    background-color: #fff;
+    color: #444;
+    margin-bottom: 5px;
+    display: none;
+}
+
+.ewg_conn_status {
+    font-size: 0.9em;
+    position: fixed;
+    bottom: 0px;
+    width: 150px;
+}
+
+.ewg_conn_status p {
+    padding: 5px;
+}
+
+.ewg_conn_status img {
+    width: 10px;
+    height: 10px;
+}
+
+.ewg_event_item {
+    cursor: pointer;
+}
+
+.ewg_permission_table td {
+    padding: 1px;
+    margin: 0;
+}
+
+.map {
+    width: 600px;
+    height: 600px;
+    float: left;
+}
+
+.scrolldiv {
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.w100 {
+    width: 100px;
+}
+
+.w200 {
+    width: 200px;
+}
+
+.w300 {
+    width: 300px;
+}
+
+.w400 {
+    width: 400px;
+}
+
+.w500 {
+    width: 500px;
+}
+
+.h100 {
+    height: 100px;
+}
+
+.h200 {
+    height: 200px;
+}
+.h300 {
+    height: 300px;
+}
+.h400 {
+    height: 400px;
+}
+
+.h500 {
+    height: 300px;
+}
+.h600 {
+    height: 400px;
+}
+
+
+.floatl {
+    float: left;
+}
+
+#login {
+    width: 200px;
+    height: 130px;
+    position: absolute;
+    top:0;
+    padding: 20px;
+    border: 1px solid #ff892e;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    margin: auto;
+}
+
+#login input {
+    width: 150px;
+}
+
+#header {
+    z-index: 5000;
+    position: fixed;
+    top: 0px;
+    width: 100%;
+    height: 60px;
+    background-color: #fff;
+    padding: 5px;
+    border-bottom: 2px solid #ff892e;
+}
+
+#header_main {
+    font-size: 50px;
+    padding-left: 20px;
+}
+
+#header_sub {
+    color: #ff892e;
+    font-size: 30px;
+    padding-left: 20px;
+}
+
+#header_user_name {
+    border: 1px solid #ccc;
+    position: fixed;
+    right: 0;
+    top: 10px;
+    padding: 5px;
+    margin-right: 10px;
+    background-color: #ccc;
+    color: #ff892e;
+}
+
+#header_user_name > span {
+    color: #444;
+}
+
+#header_logout_button {
+    color: #444;
+    background-color: #ff892e;
+    padding: 2px;
+    margin: 2px;
+}
+
+#header_logout_button:hover {
+    color: #ccc;
+    background-color: #ff892e;
+}
+
+#left {
+    position: fixed;
+    z-index: 3000;
+    top: 80px;
+    padding-top: 10px;
+    float: left;
+    width: 150px;
+}
+
+#page {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    min-height: 100%;
+}
+
+#content {
+    padding-left: 160px;
+    padding-top: 80px;
+    padding-right: 10px;
+}
+
+#map {
+    width: 600px;
+    height: 600px;
+    float: left;
+}

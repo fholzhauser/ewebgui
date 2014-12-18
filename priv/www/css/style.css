@@ -1,0 +1,89 @@
+/***** CSS RESET *****/
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outline:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+/***** STYLE *****/
+
+html {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    color: #fff;
+    background: #099;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+input {
+    width: 200px;
+    border: 2px solid #099;
+}
+
+input:focus {
+    border: 2px solid #ffe600;
+}
+
+input[type="text"], input[type="password"] {
+    border: 2px solid #099;
+    color: #636468;
+}
+
+input[type="text"]:focus, input[type="password"]:focus {
+    border: 2px solid #ffe600;
+}
+
+input[type="button"],input[type="submit"],input[type="reset"] {
+    font-size: 1.2rem;
+    height: 30px;
+    color: #636468;
+    background: #ffe600;
+}
+
+input[type="button"]:hover,input[type="submit"]:hover,input[type="reset"]:hover {
+    color: #636468;
+    background: #e9d000;
+    border: 2px solid #ffe600;
+}
+
+input[type="button"]:focus,input[type="submit"]:focus,input[type="reset"]:focus {
+    color: #636468;
+    background: #e9d000;
+}
+
+h1 {
+    color: #ffe600;
+    font-size: 1.5em;
+}
+
+.padding10 {
+    padding: 10px;
+}
+
+#login {
+    width: 200px;
+    height: 120px;
+    position: absolute;
+    top:0;
+    padding: 20px;
+    border: 1px solid #ffe600;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    margin: auto;
+}
+
+#login input {
+    width: 150px;
+}
+
+#pagecontent {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    min-height: 100%;
+}
+
+
