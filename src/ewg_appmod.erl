@@ -48,7 +48,7 @@ out(A) ->
                                     %% valid login: LET'S HANDLE THE REQUEST !!!
                                     %% don't give the login parameters to the handler but if it is
                                     %% a GET request then use the query parameters instead
-                                    [handle_request(Cookie, Path, yaws_api:parse_query(A))];
+                                    [redirect(Cookie, [], Path)];
                                 _ ->
                                     %% bad credentials, try again
                                     [{html, login_screen("Login Failed !")}]
