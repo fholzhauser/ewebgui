@@ -103,7 +103,12 @@ validator(Param, ip, V) ->
 validator({_Name, Value}, {ip, Text}, _) ->
     case io_lib:fread("~d.~d.~d.~d", Value) of
         {ok, [A,B,C,D], []} ->
-            {ok, {A,B,C,D}};
+            case [Nr >= 0 andalso Nr <256 || Nr <- [A,B,C,D]] of
+                [true, true, true, true] ->
+                    {ok, {A,B,C,D}};
+                _ ->
+                    {error, Text}
+            end;
         _ ->
             {error, Text}
     end;
