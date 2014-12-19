@@ -210,10 +210,10 @@ input_text(Name) ->
         case get_form_param(Name) of
             undefined -> [];
             Value -> [{value, Value}]
-        end
+        end ++ is_disabled(Name)
     }.
 input_text(Name, Value) ->
-    {input, [{type, "text"}, {name, Name}, {value, Value}]}.
+    {input, [{type, "text"}, {name, Name}, {value, Value}] ++ is_disabled(Name)}.
 
 input_password(Name) ->
     {input,
@@ -225,10 +225,10 @@ input_password(Name) ->
         case get_form_param(Name) of
             undefined -> [];
             Value -> [{value, Value}]
-        end
+        end ++ is_disabled(Name)
     }.
 input_password(Name, Value) ->
-    {input, [{type, "password"}, {name, Name}, {value, Value}]}.
+    {input, [{type, "password"}, {name, Name}, {value, Value}] ++ is_disabled(Name)}.
 
 
 input_radio(Name, Options) ->
@@ -237,7 +237,7 @@ input_radio(Name, Options, Selected) -> [
     [
         {
             input,
-            [{type, "radio"}, {name, Name}, {value, OptVal}]
+            [{type, "radio"}, {name, Name}, {value, OptVal}] ++ is_disabled(Name)
             ++ if Selected == OptVal -> [checked]; true -> [] end
         },
         OptLabel
@@ -247,7 +247,7 @@ input_radio(Name, Options, Selected) -> [
 input_checkbox(Name) ->
     input_checkbox(Name, get_form_param(Name)).
 input_checkbox(Name, State) ->
-    {input, [{type, "checkbox"}, {name, Name}] ++ if State == "on" -> [checked]; true -> [] end}.
+    {input, [{type, "checkbox"}, {name, Name}] ++ if State == "on" -> [checked]; true -> [] end ++ is_disabled(Name)}.
 
 input_select(Name, Options) ->
     input_select(Name, Options, get_form_param(Name)).
@@ -259,7 +259,7 @@ input_select(Name, Options, Value) ->
                     [{value, OptVal}] ++
                     if
                         Value == OptVal -> [selected]; true -> []
-                    end,
+                    end ++ is_disabled(Name),
                     OptLabel
                 };
             OptVal ->
@@ -284,10 +284,10 @@ input_textarea(Name) ->
         case get_form_param(Name) of
             undefined -> [];
             Value -> [Value]
-        end
+        end ++ is_disabled(Name)
     }.
 input_textarea(Name, Value) ->
-    {textarea, [{name, Name}, {cols, "30"}, {rows, "5"}], Value}.
+    {textarea, [{name, Name}, {cols, "30"}, {rows, "5"}] ++ is_disabled(Name), Value}.
 
 input_datepicker(Name) ->
     {input, [{type, "text"}, {class, "datetimepicker"}, {name, Name}] ++
@@ -298,11 +298,11 @@ input_datepicker(Name) ->
         case get_validation_result(Name) of
             [] -> [];
             Errors ->  [{class, "validation_error"},{title, " - " ++ string:join(Errors, "\n - ")}]
-        end
+        end ++ is_disabled(Name)
     }.
 
 input_datepicker(Name, Value) ->
-    {input, [{type, "text"}, {class, "datetimepicker"}, {name, Name}, {value, Value}]}.
+    {input, [{type, "text"}, {class, "datetimepicker"}, {name, Name}, {value, Value}] ++ is_disabled(Name)}.
 
 input_hidden(Name) ->
     {input, [{type, "hidden"}, {name, Name}] ++
@@ -350,3 +350,9 @@ eform(Name, IAttr, TableContent, RestContent) ->
         formtable(TableContent),
         RestContent
     ]}.
+
+is_disabled(Name) ->
+    case ewg_access:is_form_param_disabled(Name) of
+        true -> [disabled];
+        false -> []
+    end.

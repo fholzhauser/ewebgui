@@ -3,6 +3,10 @@
 -import(ewg_lib, [plget/2, plget/3, plset/3, pldel/2, id/0]).
 
 
+%%===========================================
+%% Form management functions
+%%===========================================
+
 %% get the form parameters for use in e.g. input macros to fill values
 get_form_params() ->
     case get(ewg_form_params) of undefined -> []; Params -> Params end.
@@ -47,6 +51,25 @@ push_validation(Name, {ok, Value}) ->
     set_form_param(Name, Value);
 push_validation(Name, {error, Text}) ->
     add_validation_result(Name, Text).
+
+%% set form fields to disable
+disable_form_params() ->
+    disable_form_params(all).
+
+disable_form_params(Params) ->
+    put(ewg_disabled_form_params, Params).
+
+is_form_param_disabled(Name) ->
+    case get(ewg_disabled_form_params) of
+        all -> true;
+        Params when is_list(Params) -> lists:member(Name, Params);
+        _ -> false
+    end.
+
+%%===========================================
+%% User management functions
+%%===========================================
+
 
 check_user_login(UserName, Password) ->
     case get_user_data(UserName) of
