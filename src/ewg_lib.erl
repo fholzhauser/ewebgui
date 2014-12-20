@@ -181,7 +181,12 @@ validator(Param, {mfa, M, F, A}, V) -> apply(M, F, [Param, V | A]).
 tost(undefined) -> "";
 % ip
 tost({A, B, C, D}) ->
-    lists:flatten(io_lib:format("~w.~w.~w.~w", [A, B, C, D]));
+    case [is_integer(N) andalso N >= 0 andalso N < 256 || N <- [A, B, C, D]] of
+        [true, true, true, true] ->
+            lists:flatten(io_lib:format("~w.~w.~w.~w", [A, B, C, D]));
+        _ ->
+            termtost({A, B, C, D})
+    end;
 % int
 tost(Val) when is_integer(Val) ->
     integer_to_list(Val);
