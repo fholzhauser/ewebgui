@@ -189,13 +189,18 @@ tost({A, B, C, D}) ->
         _ ->
             termtost({A, B, C, D})
     end;
+
 % int
 tost(Val) when is_integer(Val) ->
     integer_to_list(Val);
 % float
 tost(Val) when is_float(Val) ->
     termtost(Val);
-%    float_to_list(Val);
+%    float_to_list(Val); would be more accurate but termtost is prettier
+
+% binary : This we'll want to revisit as it might be unicode so we should convert it to unicode string
+tost(Val) when is_binary(Val) ->
+    binary_to_list(Val);
 
 % atom
 tost(Val) when is_atom(Val) ->
