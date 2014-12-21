@@ -85,6 +85,14 @@ input[type="radio"] {
     height: auto;
 }
 
+input.text_input_short {
+    width: 50px;
+}
+
+input.text_input_long {
+    width: 300px;
+}
+
 select {
     font-size: 1em;
     height: 30px;
@@ -121,7 +129,10 @@ h2 {
 table .odd td, table .odd th  {background-color: #eee;}
 table .even td, table .even th {background-color: #fff;}
 
-.validation_error {background-color: #fcc; border: 2px solid #f00;}
+.validation_error {
+    background-color: #fcc;
+    border: 2px solid #f00;
+}
 
 .ewgtable {color: #444; border-collapse: collapse; border: 1px solid #ccc; padding: 3px;}
 .ewgtable th {padding: 5px; min-height: 10px; background-color: #444; color: #fff; border: 1px solid #ccc;}
@@ -132,7 +143,7 @@ table .even td, table .even th {background-color: #fff;}
 .ewg_formtable {color: #444;}
 .ewg_formtable th, td {vertical-align: middle; padding: 5px; border: 1px solid #ccc;}
 
-.big_error {color: #ff892e; border: 1px solid #fff; padding: 10px;}
+.big_error {color: #f00; border: 1px solid #f00; padding: 10px;}
 
 .ewg_advanced_option {
     display: none;

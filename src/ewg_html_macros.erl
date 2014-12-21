@@ -28,14 +28,20 @@ r({datatable, Header, Content, Options}) -> datatable(Header, Content, Options);
 r({input_datepicker, Name}) -> input_datepicker(Name);
 r({input_datepicker, Name, Value}) -> input_datepicker(Name, Value);
 
-r({input_text, Name}) -> input_text(Name);
-r({input_text, Name, Value}) -> input_text(Name, Value);
+r({input_text, Name}) -> input_text(default, Name);
+r({input_text, Name, Value}) -> input_text(default, Name, Value);
 
-r({input_hidden, Name}) -> input_hidden(Name);
-r({input_hidden, Name, Value}) -> input_hidden(Name, Value);
+r({input_text_short, Name}) -> input_text(short, Name);
+r({input_text_short, Name, Value}) -> input_text(short, Name, Value);
+
+r({input_text_long, Name}) -> input_text(long, Name);
+r({input_text_long, Name, Value}) -> input_text(long, Name, Value);
 
 r({input_password, Name}) -> input_password(Name);
 r({input_password, Name, Value}) -> input_password(Name, Value);
+
+r({input_hidden, Name}) -> input_hidden(Name);
+r({input_hidden, Name, Value}) -> input_hidden(Name, Value);
 
 r({input_textarea, Name}) -> input_textarea(Name);
 r({input_textarea, Name, Value}) -> input_textarea(Name, Value);
@@ -200,20 +206,34 @@ datatable(Header, Content, Options) ->
     }.
 
 
-input_text(Name) ->
+input_text(Style, Name) ->
+    StyleClass = case Style of
+        default -> "";
+        long -> "text_input_long";
+        short -> "text_input_short"
+    end,
     {input,
         [{type, "text"}, {name, Name}] ++
         case get_validation_result(Name) of
-            [] -> [];
-            Errors -> [{class, "validation_error"}, {title, " - " ++ string:join(Errors, "\n -")}]
+            [] -> if StyleClass == "" -> []; true -> [{class, StyleClass}] end;
+            Errors -> [
+                {class, "validation_error" ++ " " ++ StyleClass},
+                {title, " - " ++ string:join(Errors, "\n -")}
+            ]
         end ++
         case get_form_param(Name) of
             undefined -> [];
             Value -> [{value, Value}]
         end ++ is_disabled(Name)
     }.
-input_text(Name, Value) ->
-    {input, [{type, "text"}, {name, Name}, {value, Value}] ++ is_disabled(Name)}.
+
+input_text(Style, Name, Value) ->
+    Class = case Style of
+        default -> [];
+        long -> [{class, "text_input_long"}];
+        short -> [{class, "text_input_short"}]
+    end,
+    {input, [{type, "text"}, {name, Name}, {value, Value}] ++ Class ++ is_disabled(Name)}.
 
 input_password(Name) ->
     {input,
