@@ -116,8 +116,10 @@ validator({_Name, Value}, {ip, Text}, _) ->
 %% This is actually only type conversion and will never fail, allow without error text
 validator({_Name, Value}, 'atom', _) ->
     {ok, list_to_atom(Value)};
-validator({_Name, Value}, {'atom', _Text}, _) ->
-    {ok, list_to_atom(Value)};
+
+%% This is actually only type conversion and will never fail, allow without error text
+validator({_Name, Value}, binary, _) ->
+    {ok, list_to_binary(Value)};
 
 validator({_Name, Value}, {member_atom, List, Text}, _) ->
     AtomVal = list_to_atom(Value),
