@@ -59,6 +59,7 @@ disable_form_params() ->
 disable_form_params(Params) ->
     put(ewg_disabled_form_params, Params).
 
+%% check it
 is_form_param_disabled(Name) ->
     case get(ewg_disabled_form_params) of
         all -> true;
