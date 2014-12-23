@@ -218,6 +218,32 @@ table .even td, table .even th {background-color: #fff;}
     float: left;
 }
 
+.ewg_sortable_pick_list {
+    padding: 0px;
+    margin: 0px;
+}
+
+.ewg_sortable_pick_list ul {
+    width: 188px;
+    min-height: 20px;
+    height: 140px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    list-style-type: none;
+    float: left;
+    margin: 0px;
+    padding: 0px;
+}
+.ewg_sortable_pick_list ul li {
+    width: 160px;
+    padding: 4px;
+    cursor: move;
+}
+
+.ewg_sortable_pick_list ul.itemlist {
+    background: #ff892e
+}
+
 .scrolldiv {
     overflow-x: hidden;
     overflow-y: scroll;

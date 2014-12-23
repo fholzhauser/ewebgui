@@ -55,6 +55,9 @@ r({input_radio, Name, Options, Selected}) -> input_radio(Name, Options, Selected
 r({input_select, Name, Options}) -> input_select(Name, Options);
 r({input_select, Name, Options, Selected}) -> input_select(Name, Options, Selected);
 
+r({input_picklist, Name, Options}) -> input_picklist(Name, Options);
+r({input_picklist, Name, Options, Selected}) -> input_picklist(Name, Options, Selected);
+
 r({error, Text}) -> page_error(Text);
 
 r({page_help, Content}) -> page_help(Content).
@@ -370,6 +373,23 @@ eform(Name, IAttr, TableContent, RestContent) ->
         formtable(TableContent),
         RestContent
     ]}.
+
+input_picklist(Name, Options) ->
+    input_picklist(Name, Options, string:tokens(get_form_param(Name), "|")).
+
+input_picklist(Name, Options, Selected) ->
+    FilteredOpts = lists:sort(Options -- Selected),
+    {'div', [{class, "ewg_sortable_pick_list"}, {id, Name}], [
+        {macro, {input_hidden, Name}},
+        {table, [], [
+            {tr, [], [{td, [], ["Selected"]}, {td, [], ["Options"]}]},
+            {tr, [], [
+                {td, [], [{ul, [{class, "itemlist"}], [{li, [], [Item]} || Item <- Selected]}]},
+                {td, [], [{ul, [{class, "optionlist"}], [{li, [], [Option]} || Option <- FilteredOpts]}]}
+            ]}
+        ]}
+    ]}.
+
 
 is_disabled(Name) ->
     case ewg_access:is_form_param_disabled(Name) of
