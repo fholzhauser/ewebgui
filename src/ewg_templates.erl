@@ -4,13 +4,14 @@
 
 -define(CSS, [
     "/css/menuV2.css",
-    "/js/jquery-ui-1.10.3.custom/css/start/jquery-ui-1.10.3.custom.css",
+    "/js/jquery-ui-1.11.2.custom/jquery-ui.min.css",
+    "/js/jquery-ui-1.11.2.custom/jquery-ui.theme.min.css",
     "/css/jquery-ui-timepicker-addon.css",
     "/css/ewebgui.css"
 ]).
 -define(JS, [
-    "/js/jquery-1.10.2.min.js",
-    "/js/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js",
+    "/js/jquery-1.11.2.min.js",
+    "/js/jquery-ui-1.11.2.custom/jquery-ui.min.js",
     "/js/jquery-ui-timepicker-addon.min.js",
     "/js/menuV2.js",
     "/js/jquery.flot.min.js",
