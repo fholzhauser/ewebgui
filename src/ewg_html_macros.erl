@@ -375,7 +375,11 @@ eform(Name, IAttr, TableContent, RestContent) ->
     ]}.
 
 input_picklist(Name, Options) ->
-    input_picklist(Name, Options, string:tokens(get_form_param(Name), "|")).
+    Value = case get_form_param(Name) of
+        undefined -> [];
+        V when is_list(V) -> string:tokens(V, "|")
+    end,
+    input_picklist(Name, Options, Value).
 
 input_picklist(Name, Options, Selected) ->
     FilteredOpts = lists:sort(Options -- Selected),
