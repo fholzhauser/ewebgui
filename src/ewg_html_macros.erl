@@ -393,6 +393,6 @@ input_picklist(Name, Options, Selected) ->
 
 is_disabled(Name) ->
     case ewg_access:is_form_param_disabled(Name) of
-        true -> [disabled];
+        true -> [readonly];
         false -> []
     end.
