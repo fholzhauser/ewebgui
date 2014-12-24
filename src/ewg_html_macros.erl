@@ -377,14 +377,18 @@ eform(Name, IAttr, TableContent, RestContent) ->
 input_picklist(Name, Options) ->
     Value = case get_form_param(Name) of
         undefined -> [];
-        V when is_list(V) -> string:tokens(V, "|")
+        V ->
+            case io_lib:char_list(V) of
+                true -> string:tokens(V, "|");
+                _ -> V
+            end
     end,
     input_picklist(Name, Options, Value).
 
 input_picklist(Name, Options, Selected) ->
     FilteredOpts = lists:sort(Options -- Selected),
     {'div', [{class, "ewg_sortable_pick_list"}, {id, Name}], [
-        {macro, {input_hidden, Name}},
+        {macro, {input_hidden, Name, string:join([tost(S) || S <- Selected], "|")}},
         {table, [], [
             {tr, [], [{td, [], ["Selected"]}, {td, [], ["Options"]}]},
             {tr, [], [
@@ -393,6 +397,7 @@ input_picklist(Name, Options, Selected) ->
             ]}
         ]}
     ]}.
+
 
 
 is_disabled(Name) ->

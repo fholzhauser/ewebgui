@@ -173,6 +173,14 @@ validator({_Name, Value}, {regex, Regex, Text}, _) ->
             {error, Text}
     end;
 
+validator(Param, {map, Map}, V) ->
+    validator(Param, {map, Map, "Invalid value !"}, V);
+validator({Name, Value}, {map, Map, Text}, _V) ->
+    case lists:keyfind(Value, 1, Map) of
+        false -> {error, Text};
+        {Value, Mapped} -> {ok, Mapped}
+    end;
+
 %% Validate with custom callbacks, these should return {ok, NewValue} in case of success or {error, ErrorText} in case of error
 validator(Param, Fun, V) when is_function(Fun) -> Fun(Param, V);
 validator(Param, {mf, M, F}, V) -> apply(M, F, [Param, V]);
