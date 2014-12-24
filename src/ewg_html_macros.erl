@@ -275,23 +275,26 @@ input_checkbox(Name, State) ->
 input_select(Name, Options) ->
     input_select(Name, Options, get_form_param(Name)).
 input_select(Name, Options, Value) ->
+    ValueSt = tost(Value),
     {select, [{name, Name}], [
         case Option of
             {OptLabel, OptVal} ->
+                OptValSt = tost(OptVal),
                 {option,
-                    [{value, OptVal}] ++
+                    [{value, OptValSt}] ++
                     if
-                        Value == OptVal -> [selected]; true -> []
+                        ValueSt == OptValSt -> [selected]; true -> []
                     end ++ is_disabled(Name),
                     OptLabel
                 };
             OptVal ->
+                OptValSt = tost(OptVal),
                 {option,
-                    [{value, OptVal}] ++
+                    [{value, OptValSt}] ++
                     if
-                        Value == OptVal -> [selected]; true -> []
+                        ValueSt == OptValSt -> [selected]; true -> []
                     end,
-                    OptVal
+                    OptValSt
                 }
         end ||
         Option <- Options
@@ -386,13 +389,15 @@ input_picklist(Name, Options) ->
     input_picklist(Name, Options, Value).
 
 input_picklist(Name, Options, Selected) ->
-    FilteredOpts = lists:sort(Options -- Selected),
+    SelectedStr = [tost(S) || S <- Selected],
+    OptionsStr = [tost(O) || O <- Options],
+    FilteredOpts = lists:sort(OptionsStr -- SelectedStr),
     {'div', [{class, "ewg_sortable_pick_list"}, {id, Name}], [
-        {macro, {input_hidden, Name, string:join([tost(S) || S <- Selected], "|")}},
+        {macro, {input_hidden, Name, string:join(SelectedStr, "|")}},
         {table, [], [
             {tr, [], [{td, [], ["Selected"]}, {td, [], ["Options"]}]},
             {tr, [], [
-                {td, [], [{ul, [{class, "itemlist"}], [{li, [], [Item]} || Item <- Selected]}]},
+                {td, [], [{ul, [{class, "itemlist"}], [{li, [], [Item]} || Item <- SelectedStr]}]},
                 {td, [], [{ul, [{class, "optionlist"}], [{li, [], [Option]} || Option <- FilteredOpts]}]}
             ]}
         ]}
