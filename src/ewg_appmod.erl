@@ -108,6 +108,8 @@ handle_request(Cookie, Path, Params) ->
             {html, ewg_templates:page(Content, [])}
     end.
 
+redirect(SessionId, RedirData, Path) when Path == "" ->
+    redirect(SessionId, RedirData, "/");
 redirect(SessionId, RedirData, Path) ->
     {ok, S} = yaws_api:cookieval_to_opaque(SessionId),
     yaws_api:replace_cookie_session(SessionId, S#session_data{redirect_data = RedirData}),
