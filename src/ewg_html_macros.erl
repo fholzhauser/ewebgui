@@ -415,8 +415,8 @@ input_picklist(Name, Options, Selected) ->
         {table, [], [
             {tr, [], [{td, [], ["Selected"]}, {td, [], ["Options"]}]},
             {tr, [], [
-                {td, [], [{ul, [{class, "itemlist"}], [{li, [], [Item]} || Item <- SelectedStr]}]},
-                {td, [], [{ul, [{class, "optionlist"}], [{li, [], [Option]} || Option <- FilteredOpts]}]}
+                {td, [], [{ul, [{class, "itemlist"}], [{li, [{title, Item}], [Item]} || Item <- SelectedStr]}]},
+                {td, [], [{ul, [{class, "optionlist"}], [{li, [{title, Option}], [Option]} || Option <- FilteredOpts]}]}
             ]}
         ]}
     ]}.
