@@ -111,5 +111,6 @@ $(function() {
     $(".ewg_page_help_toggle").on("click", function() {$(".ewg_page_help_toggle + div").slideToggle()});
     $(".ewg_advanced_options_toggle").on("click", function() {ewg_toggle_advanced_options($(this))});
     $(".datetimepicker").datetimepicker({dateFormat: "dd/mm/yy", firstDay: 1, numberOfMonths: 2});
+    $(".datepicker").datepicker({dateFormat: "dd/mm/yy", firstDay: 1, numberOfMonths: 2});
     initialize_form_view_status();
 });
