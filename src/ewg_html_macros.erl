@@ -25,6 +25,9 @@ r({formtable, Content}) -> formtable(Content);
 r({datatable, Header, Content}) -> datatable(Header, Content);
 r({datatable, Header, Content, Options}) -> datatable(Header, Content, Options);
 
+r({input_datetimepicker, Name}) -> input_datetimepicker(Name);
+r({input_datetimepicker, Name, Value}) -> input_datetimepicker(Name, Value);
+
 r({input_datepicker, Name}) -> input_datepicker(Name);
 r({input_datepicker, Name, Value}) -> input_datepicker(Name, Value);
 
@@ -315,7 +318,7 @@ input_textarea(Name) ->
 input_textarea(Name, Value) ->
     {textarea, [{name, Name}, {cols, "30"}, {rows, "5"}] ++ is_disabled(Name), Value}.
 
-input_datepicker(Name) ->
+input_datetimepicker(Name) ->
     {input, [{type, "text"}, {class, "datetimepicker"}, {name, Name}] ++
         case get_form_param(Name) of
             undefined -> [];
@@ -327,8 +330,23 @@ input_datepicker(Name) ->
         end ++ is_disabled(Name)
     }.
 
-input_datepicker(Name, Value) ->
+input_datetimepicker(Name, Value) ->
     {input, [{type, "text"}, {class, "datetimepicker"}, {name, Name}, {value, Value}] ++ is_disabled(Name)}.
+
+input_datepicker(Name) ->
+    {input, [{type, "text"}, {class, "datepicker"}, {name, Name}] ++
+        case get_form_param(Name) of
+            undefined -> [];
+            Value -> [{value, Value}]
+        end ++
+        case get_validation_result(Name) of
+            [] -> [];
+            Errors ->  [{class, "validation_error"},{title, " - " ++ string:join(Errors, "\n - ")}]
+        end ++ is_disabled(Name)
+    }.
+
+input_datepicker(Name, Value) ->
+    {input, [{type, "text"}, {class, "datepicker"}, {name, Name}, {value, Value}] ++ is_disabled(Name)}.
 
 input_hidden(Name) ->
     {input, [{type, "hidden"}, {name, Name}] ++
