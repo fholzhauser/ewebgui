@@ -6,6 +6,10 @@
 %%===========================================
 %% Form management functions
 %%===========================================
+%% revert form params to before validation, should anything fail after validation
+%% and the original values should be rendered
+revert_form_params() ->
+    put(ewg_form_params, get(ewg_orig_form_params)).
 
 %% get the form parameters for use in e.g. input macros to fill values
 get_form_params() ->

@@ -112,7 +112,8 @@ validate_and_call(Params, Validations, {M, F}, Permissions) ->
     %% validation can be used eventually standalone too, therefore in ewg_lib
     {Errors, Validated} = ewg_lib:validate(Params, Validations),
     put(ewg_validations_results, Errors),
-    put(ewg_form_params, Validated),
+    put(ewg_orig_form_params, Params),
+    put(ewg_form_params, case Errors of [] -> Validated; _ -> Params end),
     put(ewg_current_call, {M, F}),
     %% All parameters are on the process dictionary there is no need to
     %% give it to the function.
