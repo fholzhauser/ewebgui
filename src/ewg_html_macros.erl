@@ -260,14 +260,18 @@ input_password(Name, Value) ->
 input_radio(Name, Options) ->
     input_radio(Name, Options, get_form_param(Name)).
 input_radio(Name, Options, Selected) -> [
-    [
-        {
-            input,
-            [{type, "radio"}, {name, Name}, {value, tost(OptVal)}] ++ is_disabled(Name)
-            ++ if Selected == OptVal -> [checked]; true -> [] end
-        },
-        OptLabel
-    ] || {OptLabel, OptVal} <- Options
+    begin
+        OptValSt = tost(OptVal),
+        [
+                {
+                    input,
+                    [{type, "radio"}, {name, Name}, {value, tost(OptVal)}] ++
+                    is_disabled(Name) ++
+                    case tost(Selected) of OptValSt -> [checked]; _ -> [] end
+                },
+                OptLabel
+        ]
+    end || {OptLabel, OptVal} <- Options
 ].
 
 input_checkbox(Name) ->
