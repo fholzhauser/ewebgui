@@ -368,6 +368,11 @@ dateadd(AmountSec) ->
     ),
     lists:flatten(io_lib:format("~2.10.0B/~2.10.0B/~4.10B ~2.10.0B:~2.10.0B", [D, Mo, Y, H, M])).
 
+now_add(SecAdd) ->
+    {Msec, Sec, SecM} = os:timestamp(),
+    NewSecs = Msec*1000000+Sec+SecAdd,
+    {NewSecs div 1000000, NewSecs rem 1000000, SecM}.
+
 %% Generate password
 %% 8 characters min, min 1 number and 1 capitals
 pwgen() ->

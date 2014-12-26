@@ -1,7 +1,7 @@
 -module(ewg_access).
 -compile(export_all).
 -import(ewg_lib, [plget/2, plget/3, plset/3, pldel/2, id/0]).
-
+-include_lib("ewebgui/include/ewebgui.hrl").
 
 %%===========================================
 %% Form management functions
@@ -75,17 +75,97 @@ is_form_param_disabled(Name) ->
 %% User management functions
 %%===========================================
 
+block_user(User, Minutes) ->
+    block_user(User, Minutes, []).
+
+block_user(User, Minutes, EventInfo) ->
+    Until = ewg_lib:now_add(Minutes * 60),
+    set_user_status(User, {blocked, Until}, EventInfo).
+
+suspend_user(User) ->
+    set_user_status(User, suspended, []).
+
+suspend_user(User, EventInfo) ->
+    set_user_status(User, suspended, EventInfo).
+
+reset_user(User) ->
+    set_user_status(User, active, []).
+
+reset_user(User, EventInfo) ->
+    set_user_status(User, active, EventInfo).
+
+get_user_status(User) ->
+    case get_user_var(User, ewg_user_status) of
+        undefined -> set_user_var(User, active), active;
+        Status -> Status
+    end.
+
+set_user_status(User, NewStatus, EventInfo) ->
+    CurrentStatus = get_user_status(User),
+    ?EVENT(ewg_user_status_changed, [{old_status, CurrentStatus}, {new_status, NewStatus}, {user, User} | EventInfo]),
+    set_user_var(User, ewg_user_status, NewStatus).
+
+increase_login_count(User) ->
+     case get_user_var(User, ewg_login_count) of
+        undefined -> set_user_var(User, ewg_login_count, 1), 1;
+        Cnt -> set_user_var(User, ewg_login_count, Cnt + 1), Cnt
+    end.
+
+reset_login_count(User) ->
+    set_user_var(User, ewg_login_count, 0).
+
+set_request_user(User) ->
+    put(ewg_user, User).
 
 check_user_login(UserName, Password) ->
+    EventDefaults = [{login_name_sent, UserName}],
     case get_user_data(UserName) of
         undefined ->
-            {error, no_user};
+            ?EVENT(ewg_login_fail, [{reason, wrong_user}| EventDefaults]),
+            {error, wrong_user};
         UserData ->
             case plget(password, UserData) == erlang:phash2(Password) of
                 true ->
-                    ok;
+                    case get_user_status(UserName) of
+                        suspended ->
+                            ?EVENT(ewg_login_fail, [{reason, suspended} | EventDefaults]),
+                            {error, user_suspended};
+                        {blocked, Ts} ->
+                            Now = os:timestamp(),
+                            if
+                                Now > Ts ->
+                                    set_request_user(UserName),
+                                    ?EVENT(ewg_login_success, [{reason, blocking_expired} | EventDefaults]),
+                                    reset_user(UserName),
+                                    ok;
+                                true ->
+                                    ?EVENT(ewg_login_fail, [{reason, blocked} | EventDefaults]),
+                                    {error, blocked}
+                            end;
+                        active ->
+                            set_request_user(UserName),
+                            ?EVENT(ewg_login_success, EventDefaults),
+                            ok
+                    end;
                 _ ->
-                    {error, password_error}
+                    Count = increase_login_count(UserName),
+                    MaxAttempts = ewg_conf:read(ewg_login_max_attempts, 3),
+                    if
+                        Count > MaxAttempts ->
+                            ?EVENT(ewg_login_fail, [{reason, wrong_password}, {login_attempt_count, Count+1} | EventDefaults]),
+                            case ewg_conf:read(ewg_login_max_attempt_action, {block, 10}) of
+                                suspend ->
+                                    reset_login_count(UserName),
+                                    suspend_user(UserName);
+                                {block, Mins} ->
+                                    reset_login_count(UserName),
+                                    block_user(UserName, Mins)
+                            end,
+                            {error, too_many_attempts};
+                        true ->
+                            ?EVENT(ewg_login_fail, [{reason, wrong_password}, {login_attempt_count, Count+1} | EventDefaults]),
+                            {error, wrong_password}
+                    end
             end
     end.
 
@@ -235,3 +315,6 @@ get_group_var(GroupName, Key) ->
 
 delete_group(GroupName) ->
     mnesia:dirty_delete(ewg_group, GroupName).
+
+get_request_ip() -> get(ewg_request_client_ip).
+get_request_port() -> get(ewg_request_client_port).

@@ -1,6 +1,7 @@
 -module(ewg_appmod).
 -include_lib("yaws/include/yaws_api.hrl").
 -include_lib("yaws/include/yaws.hrl").
+-include_lib("ewebgui/include/ewebgui.hrl").
 -export([out/1, list_sessions/0, delete_session/1]).
 -import(ewg_lib, [plget/2, plget/3, plset/3, cookie_name/0]).
 
@@ -24,7 +25,9 @@ out(A) ->
             []
     end,
     Path = case A#arg.pathinfo of undefined -> ""; P -> P end,
-    {ClientIp, _ClientPort} = A#arg.client_ip_port,
+    {ClientIp, ClientPort} = A#arg.client_ip_port,
+    put(ewg_request_client_ip, ClientIp),
+    put(ewg_request_client_port, ClientPort),
     %% 4 nested cases are ugly, yet I think here it is more readable than making small functions
     case yaws_api:find_cookie_val(cookie_name(), (A#arg.headers)#headers.cookie) of
         [] ->
@@ -49,9 +52,41 @@ out(A) ->
                                     %% don't give the login parameters to the handler but if it is
                                     %% a GET request then use the query parameters instead
                                     [redirect(Cookie, [], Path)];
-                                _ ->
-                                    %% bad credentials, try again
-                                    [{html, login_screen("Login Failed !")}]
+                                {error, wrong_password} ->
+                                    [{html, login_screen(
+                                        ewg_conf:read(
+                                            ewg_login_wrong_credentials_text,
+                                            "Login Failed, wrong credentials !"
+                                        )
+                                    )}];
+                                {error, wrong_user} ->
+                                    [{html, login_screen(
+                                        ewg_conf:read(
+                                            ewg_login_wrong_username_text,
+                                            "Login Failed, wrong credentials !"
+                                        )
+                                    )}];
+                                {error, too_many_attempts} ->
+                                    [{html, login_screen(
+                                        ewg_conf:read(
+                                            ewg_login_too_many_attempts_text,
+                                            "Too many wrong login attempts, please contact administrator !"
+                                        )
+                                    )}];
+                                {error, blocked} ->
+                                    [{html, login_screen(
+                                        ewg_conf:read(
+                                            ewg_login_blocked_text,
+                                            "Account blocked for a period of time, please contact administrator or try later !"
+                                        )
+                                    )}];
+                                {error, user_suspended} ->
+                                    [{html, login_screen(
+                                        ewg_conf:read(
+                                            ewg_login_user_suspended_text,
+                                            "User account suspended, please contact administrator !"
+                                        )
+                                    )}]
                             end
                     end;
                 {ok, S} ->
@@ -62,6 +97,7 @@ out(A) ->
                         "ewg_logout" ->
                             %ewg_user_log:log("user logout", "", "success"),
                             % delete the session and make a new one
+                            ?EVENT(ewg_logout, []),
                             yaws_api:delete_cookie_session(Cookie),
                             erase(ewg_user),
                             new_session(ClientIp);
