@@ -2,13 +2,14 @@
 -export([event/1, list_callbacks/0, delete_callback/1, register_callback/1, reset_callbacks/0]).
 
 event(EventData) ->
+    EventId = ewg_lib:plget(ewg_event_id, EventData),
     Data = complement_data(EventData),
     CallBacks = ewg_conf:read(ewg_event_callbacks, []),
     [
         case CB of
-            {M, F} -> erlang:spawn(M, F, [Data]);
-            {M, F, A} -> erlang:spawn(M, F, [Data | A]);
-            Fun when is_function(Fun) -> erlang:spawn(fun() -> Fun(Data) end)
+            {M, F} -> erlang:spawn(M, F, [EventId, Data]);
+            {M, F, A} -> erlang:spawn(M, F, [EventId, Data | A]);
+            Fun when is_function(Fun) -> erlang:spawn(fun() -> Fun(EventId, Data) end)
         end || CB <- CallBacks
     ],
     ok.
