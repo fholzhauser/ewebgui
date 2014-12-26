@@ -7,6 +7,11 @@ html {
     height: 100%;
 }
 
+/*
+ * Jquery UI start Orange background #f6a828
+ * Orig ewebgui Orange #ff892e
+*/
+
 body {
     margin: 0;
     padding: 0;
@@ -96,6 +101,7 @@ input.text_input_long {
 select {
     font-size: 1em;
     height: 30px;
+    min-width: 207px;
 }
 
 h1 {
@@ -250,6 +256,10 @@ table .even td, table .even th {background-color: #fff;}
 .scrolldiv {
     overflow-x: hidden;
     overflow-y: scroll;
+}
+
+.w50 {
+    width: 50px;
 }
 
 .w100 {

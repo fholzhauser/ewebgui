@@ -263,7 +263,7 @@ input_radio(Name, Options, Selected) -> [
     [
         {
             input,
-            [{type, "radio"}, {name, Name}, {value, OptVal}] ++ is_disabled(Name)
+            [{type, "radio"}, {name, Name}, {value, tost(OptVal)}] ++ is_disabled(Name)
             ++ if Selected == OptVal -> [checked]; true -> [] end
         },
         OptLabel
