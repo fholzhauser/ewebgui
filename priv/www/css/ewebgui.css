@@ -148,6 +148,7 @@ table .even td, table .even th {background-color: #fff;}
 
 .ewg_formtable {color: #444;}
 .ewg_formtable th, td {vertical-align: middle; padding: 5px; border: 1px solid #ccc;}
+.ewg_formtable .formtable_section {background: #ff892e;}
 
 .big_error {color: #f00; padding: 10px;}
 
