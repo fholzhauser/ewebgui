@@ -108,18 +108,20 @@ match_param({Name, Value}, List) -> lists:member({Name, Value}, List);
 match_param(Name, List) when is_list(List) -> lists:keymember(Name, 1, List).
 
 validate_and_call(Params, Validations, {M, F}, Permissions) ->
+    validate_and_call(Params, Validations, {M, F, []}, Permissions);
+validate_and_call(Params, Validations, {M, F, A}, Permissions) ->
     %% collapse
     %% validation can be used eventually standalone too, therefore in ewg_lib
     {Errors, Validated} = ewg_lib:validate(Params, Validations),
     put(ewg_validations_results, Errors),
     put(ewg_orig_form_params, Params),
     put(ewg_form_params, case Errors of [] -> Validated; _ -> Params end),
-    put(ewg_current_call, {M, F}),
+    put(ewg_current_call, {M, F, A}),
     %% All parameters are on the process dictionary there is no need to
     %% give it to the function.
     %% Errors we only give indicationto make it easy matching ok and error
     %% handlers: validated or validation_failed
-    M:F(case Errors of [] -> validated; _ -> validation_failed end, Permissions).
+    apply(M, F, [case Errors of [] -> validated; _ -> validation_failed end, Permissions | A]).
 
 make_menu_structure() ->
     Permissions = ewg_access:get_permissions(),
