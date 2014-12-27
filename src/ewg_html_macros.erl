@@ -136,8 +136,10 @@ formtable_row(Odd, {tr, Attrs, Html}) ->
             {Attrs, OddClass}
     end,
     {tr, append_class(NewAttrs, AppendClass) , Html};
+
 formtable_row(_Odd, {section, Text}) ->
     {tr, [], [{th, [{class, "formtable_section"}, {colspan, "2"}], [Text]}]};
+
 formtable_row(Odd, {Name, Value}) ->
     formtable_row(Odd, {Name, Value, []});
 formtable_row(Odd, {Name, Value, Options}) ->
