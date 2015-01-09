@@ -175,7 +175,7 @@ validator({_Name, Value}, {regex, Regex, Text}, _) ->
 
 validator(Param, {map, Map}, V) ->
     validator(Param, {map, Map, "Invalid value !"}, V);
-validator({Name, Value}, {map, Map, Text}, _V) ->
+validator({_Name, Value}, {map, Map, Text}, _V) ->
     case lists:keyfind(Value, 1, Map) of
         false -> {error, Text};
         {Value, Mapped} -> {ok, Mapped}
