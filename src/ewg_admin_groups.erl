@@ -1,7 +1,7 @@
 -module(ewg_admin_groups).
--include_lib("ewebgui/include/ewebgui.hrl").
 -compile(export_all).
 -import(ewg_access, [get_form_param/1, get_form_params/0]).
+-include_lib("ewebgui/include/ewebgui.hrl").
 
 webgui_info() -> [
     {handlers, [
@@ -123,10 +123,20 @@ edit_group_form(_, _) ->
 edit_group(validated, _) ->
     GroupName = get_form_param("group_name"),
     Description = get_form_param("description"),
+    OldDescription = ewg_access:get_group_var(GroupName, description),
     NewPermissions = parse_permissions(get_form_params(), []),
+    OldPermissions = ewg_access:get_group_var(GroupName, permissions),
     ewg_access:set_group_var(GroupName, permissions, NewPermissions),
     ewg_access:set_group_var(GroupName, description, Description),
     ewg_access:set_group_var(GroupName, webadmin_managed_groups, all),
+    Changes = if
+        OldPermissions == NewPermissions -> [];
+        true -> [{permissions, {OldPermissions, NewPermissions}}]
+    end ++ if
+        OldDescription == Description -> [];
+        true -> [{description, {OldDescription, Description}}]
+    end,
+    ?EVENT(group_modified, [{target_group, GroupName}, {result, success}, {changes, Changes}]),
     {redirect, [], "list"};
 
 edit_group(validation_failed, _) ->
@@ -194,12 +204,19 @@ add_group(validated, _Permissions) ->
         undefined ->
             Params = get_form_params(),
             NewPermissions = parse_permissions(Params, []),
-            ewg_access:add_group(GroupName, [
+            GroupData = [
                 {description, get_form_param("description")},
-                {permissions, NewPermissions},
+                {permissions, NewPermissions}
+            ],
+            ewg_access:add_group(GroupName, GroupData ++
                 %% This we'll eventually replace with generic user/group data
                 %% administration
-                {webadmin_managed_groups, all}
+                [{webadmin_managed_groups, all}]
+            ),
+            ?EVENT(group_added, [
+                {target_group, GroupName},
+                {result, success},
+                {group_data, GroupData}
             ]),
             redirect;
         _ ->
@@ -302,7 +319,9 @@ add_permission([Level | Rest], Permissions) ->
     end.
 
 delete_group(_, _) ->
-    ewg_access:delete_group(get_form_param("ewg_hidden_item_id")),
+    GroupName = get_form_param("ewg_hidden_item_id"),
+    ewg_access:delete_group(GroupName),
+    ?EVENT(group_deleted, [{target_group, GroupName}, {result, success}]),
     redirect.
 
 list_groups(validated, Permissions) ->

@@ -2,6 +2,8 @@
 -import(ewg_access, [get_form_param/1, set_form_param/2, set_form_params/1]).
 -compile(export_all).
 
+-include_lib("ewebgui/include/ewebgui.hrl").
+
 webgui_info() -> [
     {handlers, [
         {"/change_own_pw", {
@@ -196,7 +198,7 @@ delete_user(validated, Permissions) ->
     } of
         {true, true} ->
             ewg_access:delete_user(User),
-            ewg_user_log:log("delete user", User, "success"),
+            ?EVENT(user_deleted, [{result, success}, {target_user, User}]),
             list_users(validated, Permissions);
         _ ->
             ewg_templates:no_access_content()
@@ -244,7 +246,11 @@ edit_user(validated, Permissions) ->
             [ewg_access:set_user_var(User, Param, Value) || {Param, Value} <- NewParams],
             if
                 OldParams =/= NewParams ->
-                    ewg_user_log:log("edit user", User, "success", [{changes, ewg_lib:plmods(OldParams, NewParams)}]);
+                    ?EVENT(user_modified, [
+                        {target_user, User},
+                        {result, success},
+                        {changes, ewg_lib:plmods(OldParams, NewParams)}
+                    ]);
                 true ->
                     ok
             end,
@@ -302,7 +308,11 @@ add_user(validated, _Permissions) ->
     Res = ewg_access:add_user(UserName, Pw, Params),
     if
         Res == ok ->
-            ewg_user_log:log("add user", UserName, "success", [{user_data, Params}]),
+            ?EVENT(user_added, [
+                {target_user, UserName},
+                {result, success},
+                {user_data, Params}
+            ]),
             add_user_form_int(
                 "User: " ++ UserName ++ " added",
                 ["The password of the new user is : ", {b, [{style, "color:yellow;"}], Pw}, hr]

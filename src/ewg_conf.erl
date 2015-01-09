@@ -1,9 +1,6 @@
 -module(ewg_conf).
--export([read/1, read/2, write/2]).
+-export([read/1, read/2, write/2, list/0]).
 -include_lib("ewebgui/include/ewebgui.hrl").
-
-%Change this if you want to plug in your own config things. Natively it
-%uses mnesia.
 
 read(Key) ->
     read(Key, undefined).
@@ -29,3 +26,4 @@ write(Key, Value) ->
             end
     end.
 
+list() -> [{Key, Val} || {_, Key, Val} <- ets:tab2list(ewg_conf), Key =/= apps].
