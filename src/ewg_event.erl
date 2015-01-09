@@ -1,8 +1,10 @@
 -module(ewg_event).
--export([event/1, list_callbacks/0, delete_callback/1, register_callback/1, reset_callbacks/0]).
+-export([event/1, event/2, list_callbacks/0, delete_callback/1, register_callback/1, reset_callbacks/0]).
 
 event(EventData) ->
-    EventId = ewg_lib:plget(ewg_event_id, EventData),
+    event(ewg_lib:plget(ewg_event_id, EventData), EventData).
+
+event(EventId, EventData) ->
     Data = complement_data(EventData),
     CallBacks = ewg_conf:read(ewg_event_callbacks, []),
     [

@@ -1,5 +1,5 @@
 %% This is to include some common metadata in events
--define(EVENT(EventId, EventData), ewg_event:event([
+-define(EVENT(EventId, EventData), ewg_event:event(EventId, [
     {ewg_event_id, EventId},
     {ewg_event_env, [
         {module, ?MODULE},
