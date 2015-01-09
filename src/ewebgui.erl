@@ -9,7 +9,7 @@ start() ->
     start([], []).
 
 start(_, _) ->
-    ewebgui_i:install_check(),
+    wait_for_tables([ewg_user, ewg_group, ewg_app, ewg_conf]),
     webgui_register(),
     %% Start supervisor and remember its pid to make app controller happy
     {ok, SupPid} = ewg_sup:start_link(),
@@ -35,7 +35,7 @@ start(_, _) ->
         {listen, ewg_conf:read(listen_address, {0,0,0,0})},
         %% use root appmod, really the only way to centralize access control
         {appmods, [{"/", ewg_appmod, [["js"], ["css"], ["images"]]}]}
-    ] ++
+    ] ++ setup_revproxies(ewg_conf:read(reverse_proxies)) ++
     case ewg_conf:read(use_ssl, true) of
         true ->
             CertDir = ewg_conf:read(cert_dir, LibDir ++ "/priv/cert"),
@@ -58,10 +58,39 @@ stop() ->
 stop(_) ->
     ok.
 
+setup_revproxies(RevProxies) when is_list(RevProxies) ->
+    RevPRecs = lists:foldl(
+        fun
+            ({Prefix, Url}, Acc) when is_list(Prefix) andalso is_list(Url) ->
+                case catch yaws_api:parse_url(Url) of
+                    U when is_record(U, url) ->
+                        [#proxy_cfg{prefix = Prefix, url = U} | Acc];
+                    _ ->
+                        Acc
+                end;
+            (_, Acc) ->
+                Acc
+        end,
+        [],
+        RevProxies
+    ),
+    case RevPRecs of [] -> []; _ -> [{revproxy, RevPRecs}] end;
+setup_revproxies(_) ->
+    [].
+
 %% register the app
 webgui_register() ->
     ewg_apps:store_app("/webgui_admin", {webgui_admin, "GUI Admin", "Webgui administration", [
-        ewg_admin_user_log:webgui_info(),
         ewg_admin_users:webgui_info(),
-        ewg_admin_groups:webgui_info()
+        ewg_admin_groups:webgui_info(),
+        ewg_kibana:webgui_info()
     ]}).
+
+wait_for_tables(Tabs) ->
+    case mnesia:wait_for_tables(Tabs, 5000) of
+        ok ->
+            ok;
+        {timeout, Tabs_1} ->
+            io:format("Application ewebgui waiting for mnesia tables: ~1000.p~n", [Tabs_1]),
+            wait_for_tables(Tabs)
+    end.
