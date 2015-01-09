@@ -3,15 +3,17 @@
 -export([install_check/0, install/1]).
 
 install(Nodes) ->
-    [
-        {T, mnesia:create_table(T, Opt)} || {T, Opt} <- [
-            {D, [{disc_copies, Nodes}]} || D <- [
-                ewg_user,
-                ewg_group,
-                ewg_conf
-            ]
-        ]
-    ].
+    _InstallRes = [
+     {T, mnesia:create_table(T, Opt)} || {T, Opt} <- [
+                                                      {D, [{disc_copies, Nodes}]} || D <- [
+                                                                                           ewg_user,
+                                                                                           ewg_group,
+                                                                                           ewg_conf,
+                                                                                           ewg_app
+                                                                                          ]
+                                                     ]
+    ],
+    add_superuser_if_needed().
 
 %% This will check if mnesia already has a schema, if yes then it installs there.
 %% If not (blank start) then it installs a new single node schema.
