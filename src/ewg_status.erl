@@ -8,4 +8,28 @@ show() ->
     show("default").
 
 show(_Group) ->
-[].
+    case ewg_conf:read(status_box_callback) of
+        {M, F} ->
+            case catch M:F() of
+                Statuses when is_list(Statuses) ->
+                    [{'div', [{class, "ewg_conn_status"}],[
+                        {p, [], [
+                            {img, [{src, if
+                                S == red ->
+                                    "/images/red.png";
+                                S == green ->
+                                    "/images/green.png";
+                                S == yellow ->
+                                    "/images/yellow.png";
+                                true ->
+                                    "/images/grey.png"
+                            end}]},
+                            Text
+                        ]}
+                    || {Text, S} <- Statuses]}];
+                _ ->
+                    []
+            end;
+        _ ->
+            []
+    end.
