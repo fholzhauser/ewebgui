@@ -39,7 +39,12 @@ delete_app(Path) ->
 
 request([], _) ->
     %% root path should take home
-    ewg_templates:home();
+    case ewg_conf:read(redirect_home) of
+        Redir when is_list(Redir) ->
+            request(Redir, []);
+        _ ->
+            ewg_templates:home()
+    end;
 
 request(ReqPath, Params) ->
     %% reverse sort it to make sure it finds the longest prefix first
@@ -53,14 +58,7 @@ request(ReqPath, Params) ->
                     {error, app_handler_not_found};
                 Handlers ->
                     UserPermissions = proplists:get_value(AppTag, ewg_access:get_permissions()),
-                    Result = find_handler(RestPath, Params, Handlers, UserPermissions),
-                    case ewg_conf:read(enable_default_user_log, false) of
-                        true ->
-                            ewg_user_log:log();
-                        _ ->
-                            ok
-                    end,
-                    Result
+                    find_handler(RestPath, Params, Handlers, UserPermissions)
             end;
         {error, not_found} ->
             {error, app_callback_not_found}
