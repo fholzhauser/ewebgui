@@ -132,6 +132,23 @@ h2 {
     width: 100%;
 }
 
+.fullheight {
+    height: 100%;
+}
+
+.fillheight {
+    display: block;
+    position:absolute;
+    height:auto;
+    bottom:0;
+    top:0;
+    left:0;
+    right:0;
+    margin-top:0px;
+    margin-bottom:5px;
+    margin-right:0px;
+    margin-left:0px;
+}
 table .odd td, table .odd th  {background-color: #eee;}
 table .even td, table .even th {background-color: #fff;}
 
@@ -205,11 +222,14 @@ table .even td, table .even th {background-color: #fff;}
 
 .ewg_conn_status p {
     padding: 5px;
+    overflow-y: hidden;
+    overflow-x: hidden;
 }
 
 .ewg_conn_status img {
-    width: 10px;
-    height: 10px;
+    width: 12px;
+    height: 12px;
+    padding-right: 5px;
 }
 
 .ewg_event_item {

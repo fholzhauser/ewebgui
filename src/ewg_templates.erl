@@ -3,10 +3,10 @@
 -import(ewg_lib, [plget/2]).
 
 -define(CSS, [
-    "/css/menuV2.css",
     "/js/jquery-ui-1.11.2.custom/jquery-ui.min.css",
     "/js/jquery-ui-1.11.2.custom/jquery-ui.theme.min.css",
     "/css/jquery-ui-timepicker-addon.css",
+    "/css/menuV2.css",
     "/css/ewebgui.css"
 ]).
 -define(JS, [
@@ -14,7 +14,6 @@
     "/js/jquery-ui-1.11.2.custom/jquery-ui.min.js",
     "/js/jquery-ui-timepicker-addon.min.js",
     "/js/menuV2.js",
-    "/js/jquery.flot.min.js",
     "/js/ewebgui.js"
 ]).
 
@@ -63,7 +62,7 @@ home() ->
     {
         [     hr,
         {h1, [{class, "center"}
-    ], "Welcome to O&M GUI !"}, hr], [{title, "Home"}, {subhead, "Home"}]}.
+    ], "O&M"}, hr], [{title, "Home"}, {subhead, "Home"}]}.
 
 %% common html head for all pages
 head(Opt) ->
@@ -123,7 +122,13 @@ page(Content, Opt) ->
                 head(Opt),
                 {body, [], [
                     %% the main div, interesting for the 100% layout
-                    {'div', [{id, "page"}], [
+                    {'div',
+                        [{id, "page"}] ++
+                        case plget(layout, Opt) of
+                            fillheight -> [{class, "fillheight"}];
+                            _ -> []
+                        end,
+                        [
                         %% page header
                         {'div', [{id, "header"}], [
                             {img, [{src, "/images/logo.jpg"}]},
@@ -165,7 +170,14 @@ page(Content, Opt) ->
                             _ ->
                                 {'div', [{id, "left"}], [ewg_menu:show(), ewg_status:show()]}
                         end,
-                        {'div', [{id, "content"}], [Content]}
+                        {'div',
+                            [{id, "content"}] ++
+                            case plget(layout, Opt) of
+                                fillheight -> [{class, "fillheight"}];
+                                _ -> []
+                            end,
+                            [Content]
+                        }
                     ]}
                 ]}
             ]}
